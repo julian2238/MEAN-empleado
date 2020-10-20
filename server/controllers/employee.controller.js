@@ -7,19 +7,37 @@ employeeCtrl.getEmployees = async (req, res)=> {
 };
 
 employeeCtrl.createEmployee = async (req, res)=> {
-    console.log(req.body);
+    const employee = new  Employee(req.body);
+    await employee.save();
+    res.json({
+        'status': "guardado"
+    });
 };
 
-employeeCtrl.getEmployee = function(){
+employeeCtrl.getEmployee = async(req, res)=> {
+  
+   const employee = await Employee.findById(req.params.id);
+   res.json(employee);  
+};
 
-}
+employeeCtrl.editEmployee = async(req, res)=>{
 
-employeeCtrl.editEmployee = function(){
+    const {id } = req.params
+    const employee = {
+        name: req.body.name,
+        office: req.body.office,
+        position: req.body.position,
+        salary: req.body.salary
+    }
+    await Employee.findByIdAndUpdate(id, {$set: employee}, {new: true});
+    res.json({'status': 'employeed update'})
 
-}
+    
+};
 
-employeeCtrl.deleteEmployee = function(){
-
+employeeCtrl.deleteEmployee = async (req, res) => {
+    await Employee.findByIdAndDelete(req.params.id);
+    res.json({status: 'employee deleted'})
 };
 
 
